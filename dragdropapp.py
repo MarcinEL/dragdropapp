@@ -29,6 +29,14 @@ if uploaded_files:
         fig_width = st.sidebar.slider("Figure width", 5, 20, 12)
         fig_height = st.sidebar.slider("Figure height", 5, 20, 6)
 
+        # Font customization options
+        st.sidebar.title("Font Customization")
+        title_fontsize = st.sidebar.slider("Title font size", 10, 30, 16)
+        title_fontstyle = st.sidebar.selectbox("Title font style", ["normal", "italic", "oblique"], index=0)
+        label_fontsize = st.sidebar.slider("Axis label font size", 8, 20, 12)
+        label_fontstyle = st.sidebar.selectbox("Axis label font style", ["normal", "italic", "oblique"], index=0)
+        tick_fontsize = st.sidebar.slider("Tick label font size", 8, 20, 10)
+
         # Plot setup
         fig, ax = plt.subplots(figsize=(fig_width, fig_height))
 
@@ -78,9 +86,10 @@ if uploaded_files:
         x_label = st.sidebar.text_input("X-axis label", "Learning Steps (Iterations)")
         y_label = st.sidebar.text_input("Y-axis label", "Gradient Norm")
 
-        ax.set_title(title)
-        ax.set_xlabel(x_label)
-        ax.set_ylabel(y_label)
+        ax.set_title(title, fontsize=title_fontsize, fontstyle=title_fontstyle)
+        ax.set_xlabel(x_label, fontsize=label_fontsize, fontstyle=label_fontstyle)
+        ax.set_ylabel(y_label, fontsize=label_fontsize, fontstyle=label_fontstyle)
+        ax.tick_params(axis='both', labelsize=tick_fontsize)
         ax.legend()
         if grid:
             ax.grid(True)
