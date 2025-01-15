@@ -6,10 +6,18 @@ from io import BytesIO
 import pickle
 
 # Streamlit app setup
-st.title("Tensorboard json Plotter")
+st.title("Tensorboard Plotter")
 st.write("Upload your JSON files to visualize and customize the gradient norm plot.")
 
-# Load saved settings if available
+# Load saved settings from a file if provided
+settings_file = st.sidebar.file_uploader("Load plot settings", type="pkl")
+if settings_file is not None:
+    try:
+        st.session_state['saved_settings'] = pickle.load(settings_file)
+        st.success("Settings loaded successfully!")
+    except Exception as e:
+        st.error(f"Failed to load settings: {e}")
+
 if 'saved_settings' not in st.session_state:
     st.session_state['saved_settings'] = {}
 
@@ -36,7 +44,7 @@ if uploaded_files:
             # Sidebar options for each file
             st.sidebar.title(f"Customization for {uploaded_file.name}")
             default_settings = st.session_state['saved_settings'].get(uploaded_file.name, {})
-            color = st.sidebar.color_picker(f"Select line color for {uploaded_file.name}", default_settings.get('color', "#000000"))
+            color = st.sidebar.color_picker(f"Select line color for {uploaded_file.name}", default_settings.get('color', "#00f900"))
             line_style = st.sidebar.selectbox(f"Select line style for {uploaded_file.name}", ["-", "--", "-.", ":"], index=["-", "--", "-.", ":"].index(default_settings.get('line_style', "-")), key=f"line_style_{uploaded_file.name}")
             line_width = st.sidebar.slider(f"Select line width for {uploaded_file.name}", 0.5, 5.0, default_settings.get('line_width', 1.5), key=f"line_width_{uploaded_file.name}")
             label = st.sidebar.text_input(f"Legend label for {uploaded_file.name}", default_settings.get('label', uploaded_file.name))
@@ -52,10 +60,17 @@ if uploaded_files:
             # Plot the gradient norm against learning steps (iterations)
             ax.plot(df['iteration'], df['gradient_norm'], label=label, color=color, linestyle=line_style, linewidth=line_width)
 
-        # Save settings to session state
-        if st.sidebar.button("Save Settings"):
-            st.session_state['saved_settings'] = settings
-            st.success("Settings saved successfully!")
+        # Save settings to a file
+        if st.sidebar.button("Save Settings to File"):
+            settings_file_buffer = BytesIO()
+            pickle.dump(settings, settings_file_buffer)
+            settings_file_buffer.seek(0)
+            st.download_button(
+                label="Download Settings File",
+                data=settings_file_buffer,
+                file_name="plot_settings.pkl",
+                mime="application/octet-stream"
+            )
 
         # Global plot customizations
         grid = st.sidebar.checkbox("Show grid", value=True)
