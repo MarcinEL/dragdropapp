@@ -5,7 +5,7 @@ import streamlit as st
 from io import BytesIO
 
 # Streamlit app setup
-st.title("Gradient Norm Plotter")
+st.title("Plotter json")
 st.write("Upload your JSON files to visualize and customize the gradient norm plot.")
 
 # File uploader
