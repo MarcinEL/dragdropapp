@@ -36,7 +36,7 @@ if uploaded_files:
             # Sidebar options for each file
             st.sidebar.title(f"Customization for {uploaded_file.name}")
             default_settings = st.session_state['saved_settings'].get(uploaded_file.name, {})
-            color = st.sidebar.color_picker(f"Select line color for {uploaded_file.name}", default_settings.get('color', "#00f900"))
+            color = st.sidebar.color_picker(f"Select line color for {uploaded_file.name}", default_settings.get('color', "#000000"))
             line_style = st.sidebar.selectbox(f"Select line style for {uploaded_file.name}", ["-", "--", "-.", ":"], index=["-", "--", "-.", ":"].index(default_settings.get('line_style', "-")), key=f"line_style_{uploaded_file.name}")
             line_width = st.sidebar.slider(f"Select line width for {uploaded_file.name}", 0.5, 5.0, default_settings.get('line_width', 1.5), key=f"line_width_{uploaded_file.name}")
             label = st.sidebar.text_input(f"Legend label for {uploaded_file.name}", default_settings.get('label', uploaded_file.name))
