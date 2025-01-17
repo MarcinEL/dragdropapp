@@ -6,7 +6,7 @@ from io import BytesIO
 import pickle
 
 # Streamlit app setup
-st.title("Tensorboard Plotter")
+st.title("Gradient Norm Plotter")
 st.write("Upload your JSON files to visualize and customize the gradient norm plot.")
 
 # Load saved settings from a file if provided
@@ -36,6 +36,13 @@ if uploaded_files:
         label_fontsize = st.sidebar.slider("Axis label font size", 8, 20, 12)
         label_fontstyle = st.sidebar.selectbox("Axis label font style", ["normal", "italic", "oblique"], index=0)
         tick_fontsize = st.sidebar.slider("Tick label font size", 8, 20, 10)
+
+        # Axis range customization
+        st.sidebar.title("Axis Range Customization")
+        x_min = st.sidebar.number_input("X-axis min", value=None, step=1.0, format="%.2f")
+        x_max = st.sidebar.number_input("X-axis max", value=None, step=1.0, format="%.2f")
+        y_min = st.sidebar.number_input("Y-axis min", value=None, step=1.0, format="%.2f")
+        y_max = st.sidebar.number_input("Y-axis max", value=None, step=1.0, format="%.2f")
 
         # Plot setup
         fig, ax = plt.subplots(figsize=(fig_width, fig_height))
@@ -90,6 +97,13 @@ if uploaded_files:
         ax.set_xlabel(x_label, fontsize=label_fontsize, fontstyle=label_fontstyle)
         ax.set_ylabel(y_label, fontsize=label_fontsize, fontstyle=label_fontstyle)
         ax.tick_params(axis='both', labelsize=tick_fontsize)
+
+        # Apply axis limits if specified
+        if x_min is not None or x_max is not None:
+            ax.set_xlim(left=x_min, right=x_max)
+        if y_min is not None or y_max is not None:
+            ax.set_ylim(bottom=y_min, top=y_max)
+
         ax.legend()
         if grid:
             ax.grid(True)
